@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Event Horizon</title>
+<meta name="description" content="A barred spiral galaxy of ~170k stars and clouds around a ray-traced black hole, built with Three.js.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="gl" aria-label="Three-dimensional view of a barred spiral galaxy with a black hole at its center"></canvas>
+
+<header class="hud id">
+  <h1>Event Horizon</h1>
+  <p class="lede">A spiral galaxy around a ray-traced black hole.</p>
+  <p class="hint" id="hint">Drag to orbit · Scroll or pinch to zoom</p>
+</header>
+
+<aside class="panel" id="panel" aria-label="Simulation controls" hidden>
+  <h2>Controls</h2>
+  <div class="row">
+    <div class="lab"><label for="rate">Time rate</label><output id="rateOut" for="rate">1 Myr/s</output></div>
+    <input type="range" id="rate" min="0" max="30" step="0.5" value="1">
+  </div>
+  <fieldset class="row">
+    <legend>Spiral arms</legend>
+    <div class="seg">
+      <input type="radio" name="arms" id="arms2" value="2"><label for="arms2">2</label>
+      <input type="radio" name="arms" id="arms3" value="3" checked><label for="arms3">3</label>
+      <input type="radio" name="arms" id="arms4" value="4"><label for="arms4">4</label>
+    </div>
+  </fieldset>
+  <div class="row">
+    <div class="lab"><label for="pitch">Arm pitch</label><output id="pitchOut" for="pitch">16°</output></div>
+    <input type="range" id="pitch" min="11" max="32" step="1" value="16">
+  </div>
+  <div class="row">
+    <div class="lab"><label for="bend">Light bending</label><output id="bendOut" for="bend">100%</output></div>
+    <input type="range" id="bend" min="0" max="150" step="5" value="100">
+  </div>
+  <div class="row">
+    <div class="lab"><label for="disk">Accretion disk</label><output id="diskOut" for="disk">100%</output></div>
+    <input type="range" id="disk" min="0" max="200" step="5" value="100">
+  </div>
+  <div class="row">
+    <div class="lab"><label for="bloom">Glow</label><output id="bloomOut" for="bloom">1.20</output></div>
+    <input type="range" id="bloom" min="0" max="2.5" step="0.05" value="1.2">
+  </div>
+  <div class="toggles">
+    <label class="tog"><input type="checkbox" id="dust" checked><span class="sw"></span><span class="t">Dust lanes</span></label>
+    <label class="tog"><input type="checkbox" id="drift" checked><span class="sw"></span><span class="t">Camera drift</span></label>
+  </div>
+  <div class="btns">
+    <button type="button" id="reseed">New galaxy</button>
+    <button type="button" id="reset">Reset view</button>
+  </div>
+</aside>
+
+<div class="actions">
+  <button type="button" class="primary" id="dive" aria-pressed="false">Dive in</button>
+  <button type="button" id="panelToggle" aria-controls="panel" aria-expanded="false">Controls</button>
+  <button type="button" class="icon" id="sound" aria-pressed="false" aria-label="Sound (M)" title="Sound (M)">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/>
+      <path class="waves" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>
+      <path class="mute" d="M16 9.5l5 5M21 9.5l-5 5"/>
+    </svg>
+  </button>
+  <button type="button" class="icon" id="immersive" aria-label="Hide everything (H)" title="Hide everything (H)">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+    </svg>
+  </button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div id="fallback" hidden>
+  <p><strong>The scene couldn't start</strong><span id="fallbackMsg">This page needs WebGL 2 and the three.js library from jsDelivr. Reload the page, or open it in a current desktop browser.</span></p>
+</div>
+
+<script>
+  setTimeout(function () {
+    if (!window.__ehRunning) document.getElementById('fallback').hidden = false;
+  }, 12000);
+</script>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
